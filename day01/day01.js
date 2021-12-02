@@ -5,11 +5,10 @@ function day01A (file) {
     const data = getInputData(file);
     let incs = 0;
 
-    for(let i = 1; i <= data.length; i++) {
-        if (parseInt(data[i], 10) > parseInt(data[i-1], 10)) {
-            incs++;
-        }
-    }
+    data.map(num => parseInt(num, 10)).reduce((prev, current) => {
+        if (prev && prev < current) incs++;
+        return current
+    });
 
     return incs;
 };
