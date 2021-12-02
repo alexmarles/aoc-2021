@@ -14,6 +14,24 @@ function day01A (file) {
     return incs;
 };
 
+function day01B (file) {
+    const data = getInputData(file);
+    let incs = 0;
+
+    function getWindow (index) {
+        return parseInt(data[index-2], 10) + parseInt(data[index-1], 10) + parseInt(data[index], 10);
+    }
+
+    for(let i = 3; i <= data.length; i++) {
+        if (getWindow(i) > getWindow(i-1)) {
+            incs++;
+        }
+    }
+
+    return incs;
+}
+
 module.exports = {
     day01A,
+    day01B,
 };
