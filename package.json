@@ -4,5 +4,12 @@
   "main": "index.js",
   "repository": "https://github.com/alexmarles/aoc-2021",
   "author": "Àlex Marlés",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jest": "^27.4.3"
+  },
+  "scripts": {
+      "test": "jest",
+      "start": "node index.js"
+  }
 }
