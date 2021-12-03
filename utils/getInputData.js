@@ -10,4 +10,4 @@ function getInputData (file) {
 
 module.exports = {
     getInputData,
-}
+};
