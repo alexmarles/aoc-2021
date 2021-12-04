@@ -21,9 +21,9 @@ describe('Day 03 B', () => {
         expect(result).toBe(230);
     });
 
-    // it('should solve input', () => {
-    //     const result = day03B('day03/inputData');
+    it('should solve input', () => {
+        const result = day03B('day03/inputData');
 
-    //     expect(result).toBe(3277956);
-    // });
+        expect(result).toBe(674412);
+    });
 });
