@@ -5,12 +5,12 @@ function runDay04A () {
     return result;
 }
 
-// function runDay04B () {
-//     const result = day04B('day04/inputData');
-//     return result;
-// }
+function runDay04B () {
+    const result = day04B('day04/inputData');
+    return result;
+}
 
 module.exports = {
     runDay04A,
-    // runDay04B,
+    runDay04B,
 }

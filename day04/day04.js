@@ -1,15 +1,15 @@
 /* Day 4 */
-const { getInputData, max, min } = require('../utils');
+const { getInputData, max, min, transpose } = require('../utils');
 
 function getDrawAndBoards (data) {
     const draw = data[0].split(',').map(n => parseInt(n, 10));
-    const boards = [];
+    const boards = { row: [], col: [] };
     let newBoard = [];
     const realBoards = [];
     let newRealBoard = [];
     for (let i = 2; i < data.length; i++) {
         if (data[i] === '') {
-            boards.push(newBoard);
+            boards.row.push(newBoard);
             realBoards.push(newRealBoard);
             newBoard = [];
             newRealBoard = [];
@@ -18,8 +18,10 @@ function getDrawAndBoards (data) {
             newRealBoard.push(data[i].trim().split(/\s+/).map(n => parseInt(n, 10)));
         }
     }
-    boards.push(newBoard);
+    boards.row.push(newBoard);
     realBoards.push(newRealBoard);
+
+    boards.col = boards.row.map(board => transpose(board));
 
     return {
         draw,
@@ -32,67 +34,56 @@ function day04A (file) {
     const data = getInputData(file);
     const { draw, boards, realBoards } = getDrawAndBoards(data);
 
-    const winners = boards.map(board => board.map(row => max(row)));
-    const fastest = winners.map(winner => min(winner));
+    const winners = {
+        row: boards.row.map(board => board.map(row => max(row))),
+        col: boards.col.map(board => board.map(col => max(col))),
+    };
+    const fastest = {
+        row: winners.row.map(winner => min(winner)),
+        col: winners.col.map(winner => min(winner)),
+    };
+    const dir = min(fastest.row) < min(fastest.col) ? 'row' : 'col';
 
-    const winBoard = fastest.indexOf(min(fastest));
-    const winRow = winners[winBoard].indexOf(min(winners[winBoard]));
-    const winIndex = boards[winBoard][winRow].indexOf(max(boards[winBoard][winRow]));
+    const winBoard = fastest[dir].indexOf(min(fastest[dir]));
+    const winLine = winners[dir][winBoard].indexOf(min(winners[dir][winBoard]));
+    const winIndex = boards[dir][winBoard][winLine].indexOf(max(boards[dir][winBoard][winLine]));
 
-    const winNumber = draw[boards[winBoard][winRow][winIndex]];
+    const winNumber = draw[boards[dir][winBoard][winLine][winIndex]];
     const drawn = draw.slice(0, draw.indexOf(winNumber) + 1);
     const unchecked = realBoards[winBoard].flat().filter(n => !drawn.includes(n));
     const sum = unchecked.reduce((total, current) => total + current, 0);
-    console.log('winner', winBoard, winRow, winIndex);
-    console.log('winNumber', winNumber);
-    console.log(realBoards[winBoard]);
-    console.log('drawn', drawn);
-    console.log('unchecked', unchecked);
-    console.log('sum', sum);
 
     return sum * winNumber;
 }
 
 function day04B (file) {
     const data = getInputData(file);
-    const { draw, boards } = getDrawAndBoards(data);
+    const { draw, boards, realBoards } = getDrawAndBoards(data);
 
-    let loosers = Array.from(Array(Object.keys(boards).length).keys());
-    console.log('LOOSERS', loosers);
-    let i = 0;
-    let n;
-    let lastLooser;
-    while (loosers.length > 0 && i < draw.length) {
-        n = draw[i];
-        boards.forEach((board, boardIndex) => {
-            Object.keys(board).forEach(row => {
-                if (board[row][n] === 'o') {
-                    board[row][n] = 'x';
-                }
-                if (Object.values(board[row]).every(n => n === 'x')) {
-                    loosers = loosers.filter(function(item) {
-                        return item !== boardIndex;
-                    });
-                    lastLooser = boardIndex;
-                    console.log('NUMBER', n);
-                    console.log('BOARDS', boards);
-                }
-            });
-        });
+    const winners = {
+        row: boards.row.map(board => board.map(row => max(row))),
+        col: boards.col.map(board => board.map(col => max(col))),
+    };
+    const fastest = {
+        row: winners.row.map(winner => min(winner)),
+        col: winners.col.map(winner => min(winner)),
+    };
+    const candidates = fastest.row.map((o, i) => o < fastest.col[i] ? { order: o, dir: 'row' } : { order: fastest.col[i], dir: 'col' });
+    const directions = candidates.map(dir => dir.dir);
+    const orders = candidates.map(dir => dir.order);
+    const slowest = max(orders);
+    const dir = directions[orders.indexOf(slowest)];
 
-        i++;
-    }
-    const unmarked = [];
-    Object.keys(boards[lastLooser]).forEach(row => {
-        Object.keys(boards[lastLooser][row]).forEach(n => {
-            if (boards[lastLooser][row][n] === 'o') {
-                unmarked.push(parseInt(n, 10));
-            }
-        });
-    });
-    const sumOfUnmarked = unmarked.reduce((total, curr) => total + curr, 0);
-    console.log('Looser', unmarked, sumOfUnmarked, n);
-    return sumOfUnmarked * n;
+    const winBoard = fastest[dir].indexOf(slowest);
+    const winLine = winners[dir][winBoard].indexOf(min(winners[dir][winBoard]));
+    const winIndex = boards[dir][winBoard][winLine].indexOf(max(boards[dir][winBoard][winLine]));
+
+    const winNumber = draw[boards[dir][winBoard][winLine][winIndex]];
+    const drawn = draw.slice(0, draw.indexOf(winNumber) + 1);
+    const unchecked = realBoards[winBoard].flat().filter(n => !drawn.includes(n));
+    const sum = unchecked.reduce((total, current) => total + current, 0);
+
+    return sum * winNumber;
 }
 
 module.exports = {

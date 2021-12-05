@@ -15,15 +15,15 @@ describe('Day 04 A', () => {
 });
 
 describe('Day 04 B', () => {
-    // it('should solve example', () => {
-    //     const result = day04B('day04/exampleData');
+    it('should solve example', () => {
+        const result = day04B('day04/exampleData');
 
-    //     expect(result).toBe(1924);
-    // });
+        expect(result).toBe(1924);
+    });
 
-    // it('should solve input', () => {
-    //     const result = day04B('day04/inputData');
+    it('should solve input', () => {
+        const result = day04B('day04/inputData');
 
-    //     expect(result).toBe(674412);
-    // });
+        expect(result).toBe(17435);
+    });
 });
