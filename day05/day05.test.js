@@ -7,19 +7,19 @@ describe('Day 05 A', () => {
         expect(result).toBe(5);
     });
 
-    it('should solve input', () => {
-        const result = day05A('day05/inputData');
+    // it('should solve input', () => {
+    //     const result = day05A('day05/inputData');
 
-        expect(result).toBe(7380);
-    });
+    //     expect(result).toBe(7380);
+    // });
 });
 
 describe('Day 05 B', () => {
-    // it('should solve example', () => {
-    //     const result = day05B('day05/exampleData');
+    it('should solve example', () => {
+        const result = day05B('day05/exampleData');
 
-    //     expect(result).toBe(1924);
-    // });
+        expect(result).toBe(12);
+    });
 
     // it('should solve input', () => {
     //     const result = day05B('day05/inputData');
