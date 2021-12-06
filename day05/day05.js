@@ -1,5 +1,5 @@
 /* Day 5 */
-const { getInputData, max, min, transpose } = require('../utils');
+const { getInputData, max, min } = require('../utils');
 
 function day05A (file) {
     const data = getInputData(file);
@@ -53,7 +53,6 @@ function day05B (file) {
             const end = max([x1, x2]);
             newLine = Array.from({ length: end - start + 1 }, (_, i) => [start + i, y1]);
         } else if (Math.abs(x1 - x2) === Math.abs(y1 - y2)) {
-            // console.log(`${x1},${y1} -> ${x2},${y2}`);
             const startX = min([x1, x2]);
             const endX = max([x1, x2]);
             const startY = min([y1, y2]);
@@ -64,7 +63,6 @@ function day05B (file) {
         }
         return newLine;
     }).filter(l => !!l);
-    // console.log(lines);
     const allX = new Set(lines.map(line => line.map(point => point[0]).flat()).flat());
     const allY = new Set(lines.map(line => line.map(point => point[1]).flat()).flat());
     const maxCoords = {
@@ -78,7 +76,6 @@ function day05B (file) {
             board[y][x] = board[y][x] === '.' ? 1 : board[y][x] + 1;
         });
     });
-    // console.log(board.map(l => l.join('')).join('\n'));
     return board.flat().filter(n => n > 1).length;
 }
 

@@ -7,11 +7,11 @@ describe('Day 05 A', () => {
         expect(result).toBe(5);
     });
 
-    // it('should solve input', () => {
-    //     const result = day05A('day05/inputData');
+    it('should solve input', () => {
+        const result = day05A('day05/inputData');
 
-    //     expect(result).toBe(7380);
-    // });
+        expect(result).toBe(7380);
+    });
 });
 
 describe('Day 05 B', () => {
@@ -21,9 +21,9 @@ describe('Day 05 B', () => {
         expect(result).toBe(12);
     });
 
-    // it('should solve input', () => {
-    //     const result = day05B('day05/inputData');
+    it('should solve input', () => {
+        const result = day05B('day05/inputData');
 
-    //     expect(result).toBe(17435);
-    // });
+        expect(result).toBe(21373);
+    });
 });
