@@ -21,8 +21,8 @@ function day07B (file) {
     for (let i = 0; i < maxPosition; i++) {
         const diffs = hPositions.map(n => {
             const moves = Math.abs(n - i);
-            const extra = sum(Array.from(Array(moves).keys()));
-            return moves + extra;
+            const consumption = (moves * (moves + 1)) / 2;
+            return consumption;
         });
         totals.push(sum(diffs));
     }
