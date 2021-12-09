@@ -18,12 +18,12 @@ describe('Day 08 B', () => {
     it('should solve example', () => {
         const result = day08B('day08/exampleData');
 
-        expect(result).toBe(168);
+        expect(result).toBe(61229);
     });
 
-    // it('should solve input', () => {
-    //     const result = day08B('day08/inputData');
+    it('should solve input', () => {
+        const result = day08B('day08/inputData');
 
-    //     expect(result).toBe(90040997);
-    // });
+        expect(result).toBe(1043101);
+    });
 });
