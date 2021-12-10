@@ -53,13 +53,14 @@ function day10B (file) {
         '}': 3,
         '>': 4,
     };
+    function evalScore (total, current) {
+        return total * 5 + SCORES[current];
+    }
     const data = getInputData(file);
     const parsed = data.map(parseLine);
-    const missing = parsed.filter(({ illegal, missing }) => !illegal && missing.length).map(({ missing }) => missing);
     let totalScore = 0;
-    const points = missing.map(closings => {
-        return closings.reduce((total, current) => total * 5 + SCORES[current], totalScore);
-    });
+    const points = parsed.filter(({ illegal, missing }) => !illegal && missing.length)
+                    .map(({ missing }) => missing.reduce(evalScore, totalScore));
     const middlePoint = points.sort((a, b) => b - a)[Math.floor(points.length / 2)];
     return middlePoint;
 }
