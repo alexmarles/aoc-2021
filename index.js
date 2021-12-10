@@ -7,6 +7,7 @@ const { runDay06A, runDay06B } = require('./day06/day06.run');
 const { runDay07A, runDay07B } = require('./day07/day07.run');
 const { runDay08A, runDay08B } = require('./day08/day08.run');
 const { runDay09A, runDay09B } = require('./day09/day09.run');
+const { runDay10A, runDay10B } = require('./day10/day10.run');
 
 console.log('Day 01 A result is', runDay01A());
 console.log('Day 01 B result is', runDay01B());
@@ -26,3 +27,5 @@ console.log('Day 08 A result is', runDay08A());
 console.log('Day 08 B result is', runDay08B());
 console.log('Day 09 A result is', runDay09A());
 console.log('Day 09 B result is', runDay09B());
+console.log('Day 10 A result is', runDay10A());
+console.log('Day 10 B result is', runDay10B());
