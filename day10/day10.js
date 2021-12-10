@@ -22,25 +22,15 @@ const SCORES = {
 
 function parseLine (line) {
     const stack = [];
-    let type = 'ok';
     let illegal = '';
     let i = 0;
-    while (type === 'ok' && i < line.length) {
+    while (!illegal && i < line.length) {
         const char = line[i];
-        if (OPENINGS.includes(char)) {
-            stack.push(char);
-        } else if (CLOSINGS.includes(char)) {
-            const poped = stack.pop();
-            if (MATCHING[poped] !== char) {
-                type = 'corrupted';
-                illegal = char;
-            }
-        }
+        if (OPENINGS.includes(char)) stack.push(char);
+        else if (CLOSINGS.includes(char)) illegal = MATCHING[stack.pop()] !== char ? char : illegal;
         i++;
     }
-    if (type !== 'ok' && type !== 'corrupted' && stack.length > 0) type = 'incomplete';
     return {
-        type,
         line,
         illegal,
     };
@@ -49,7 +39,7 @@ function parseLine (line) {
 function day10A (file) {
     const data = getInputData(file);
     const parsed = data.map(parseLine);
-    const points = parsed.filter(({ type }) => type === 'corrupted').map(({ illegal }) => SCORES[illegal]);
+    const points = parsed.filter(({ illegal }) => illegal.length).map(({ illegal }) => SCORES[illegal]);
     return sum(points);
 }
 
