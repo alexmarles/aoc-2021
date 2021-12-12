@@ -26,16 +26,28 @@ describe('Day 12 A', () => {
     });
 });
 
-// describe('Day 12 B', () => {
-//     it('should solve example', () => {
-//         const result = day12B('day12/exampleData');
+describe('Day 12 B', () => {
+    it('should solve example 1', () => {
+        const result = day12B('day12/exampleData1');
 
-//         expect(result).toBe(288957);
-//     });
+        expect(result).toBe(36);
+    });
 
-//     // it('should solve input', () => {
-//     //     const result = day12B('day12/inputData');
+    it('should solve example 2', () => {
+        const result = day12B('day12/exampleData2');
 
-//     //     expect(result).toBe(2870201288);
-//     // });
-// });
+        expect(result).toBe(103);
+    });
+
+    it('should solve example 3', () => {
+        const result = day12B('day12/exampleData3');
+
+        expect(result).toBe(3509);
+    });
+
+    it('should solve input', () => {
+        const result = day12B('day12/inputData');
+
+        expect(result).toBe(98441);
+    });
+});

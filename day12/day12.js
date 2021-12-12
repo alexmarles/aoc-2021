@@ -35,6 +35,38 @@ function day12A (file) {
 }
 
 function day12B (file) {
+    const data = getInputData(file);
+    const linksMap = {};
+    data.forEach(row => {
+       const [start, end] = row.split('-');
+       if (linksMap[start]) linksMap[start].push(end);
+       else linksMap[start] = [end];
+       if (linksMap[end]) linksMap[end].push(start);
+       else linksMap[end] = [start];
+    });
+
+    function getPath (start, thisPath, allPaths, smallVisit) {
+        let newPath = [
+            ...thisPath,
+            start,
+        ];
+        if (start === 'end') {
+            allPaths.push(newPath);
+            return;
+        }
+        linksMap[start].forEach(dest => {
+            if (dest.toUpperCase() === dest || !newPath.includes(dest)) {
+                getPath(dest, newPath, allPaths, smallVisit);
+            } else if (smallVisit && dest !== 'start') {
+                getPath(dest, newPath, allPaths, false);
+            }
+        });
+    }
+
+    const paths = [];
+    getPath('start', [], paths, true);
+
+    return paths.length;
 }
 
 module.exports = {
