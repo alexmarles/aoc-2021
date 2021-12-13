@@ -14,16 +14,27 @@ describe('Day 13 A', () => {
     });
 });
 
-// describe('Day 13 B', () => {
-//     it('should solve example', () => {
-//         const result = day13B('day13/exampleData');
+describe('Day 13 B', () => {
+    it('should solve example', () => {
+        const result = day13B('day13/exampleData');
 
-//         expect(result).toBe(36);
-//     });
+        expect(result).toBe(`
+█████
+█...█
+█...█
+█...█
+█████`);
+    });
 
-//     // it('should solve input', () => {
-//     //     const result = day13B('day13/inputData');
+    it('should solve input', () => {
+        const result = day13B('day13/inputData');
 
-//     //     expect(result).toBe(98441);
-//     // });
-// });
+        expect(result).toBe(`
+..██.███..████..██..█..█..██..█..█.███.
+...█.█..█....█.█..█.█..█.█..█.█..█.█..█
+...█.█..█...█..█....█..█.█..█.█..█.█..█
+...█.███...█...█....█..█.████.█..█.███.
+█..█.█....█....█..█.█..█.█..█.█..█.█.█.
+.██..█....████..██...██..█..█..██..█..█`);
+    });
+});
