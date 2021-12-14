@@ -1,42 +1,70 @@
 /* Day 14 */
-const { getInputData, max, min } = require('../utils');
+const { getInputData, sum, max, min } = require('../utils');
 
-function processPolymer (template, insertions, steps) {
-    let polymer = template;
-    for (let i = 0; i < steps; i++) {
-        // insertions.forEach(([match, insert]) => {
-        //     polymer = polymer.replace(match, `${match[0]}${insert}${match[1]}`);
-        // });
-        let i = 0;
-        while (i < polymer.length - 1) {
-            const position = insertions.map(([match, _]) => match).indexOf(polymer.slice(i, i + 2));
-            if (position > -1) {
-                polymer = polymer.slice(0, i + 1) + insertions[position][1] + polymer.slice(i + 1);
-                i += 2;
-            } else {
-                i += 1;
-            }
-        }
+function getPairs (stringName, prevCount = 1) {
+    let i = 0;
+    const newPairs = {};
+    while (i < stringName.length - 1) {
+        const pair = stringName.slice(i, i + 2);
+        newPairs[pair] = !!newPairs[pair] ? newPairs[pair] + prevCount : prevCount;
+        i++;
     }
-    return polymer;
+    return newPairs;
 }
 
-function day14A (file) {
-    const data = getInputData(file).join('\n');
+function processPolymer (template, insertions, steps) {
+    const pairs = getPairs(template);
+    let lastPair = template.slice(-2);
+    for (let i = 0; i < steps; i++) {
+        const newPairs = {};
+        insertions.forEach(([match, insert]) => {
+            if (!!pairs[match]) {
+                const currentCount = pairs[match];
+                delete pairs[match];
+                const combination = `${match[0]}${insert}${match[1]}`;
+                if (lastPair === match) {
+                    lastPair = `${insert}${match[1]}`;
+                }
+                const extraPairs = getPairs(combination, currentCount);
+                for (const pair in extraPairs) {
+                    newPairs[pair] = !!newPairs[pair] ? newPairs[pair] + extraPairs[pair] : extraPairs[pair];
+                }
+            }
+        });
+        for (const pair in newPairs) {
+            pairs[pair] = !!pairs[pair] ? pairs[pair] + newPairs[pair] : newPairs[pair];
+        }
+    }
+
+    return [pairs, lastPair];
+}
+
+function run (data, steps = 10) {
     let [template, insertions] = data.split('\n\n');
     insertions = insertions.split('\n').map(insert => insert.split(' -> '));
-    const polymer = processPolymer(template, insertions, 10);
+    const [pairs, lastPair] = processPolymer(template, insertions, steps);
     const times = {};
-    polymer.split('').forEach(char => {
-        if (times[char]) times[char] += 1;
-        else times[char] = 1;
-    });
+    for (const pair in pairs) {
+        const char = pair[0];
+        times[char] = (times[char] || 0) + pairs[pair];
+        if (pair === lastPair) {
+            const finalChar = pair[1];
+            times[finalChar] = (times[finalChar] || 0) + 1;
+        }
+    }
     const maxTimes = max(Object.values(times));
     const minTimes = min(Object.values(times));
     return maxTimes - minTimes;
 }
 
+function day14A (file) {
+    const data = getInputData(file).join('\n');
+    return run(data);
+}
+
 function day14B (file) {
+    const data = getInputData(file).join('\n');
+    return run(data, 40);
 }
 
 module.exports = {

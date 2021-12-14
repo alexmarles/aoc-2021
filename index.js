@@ -40,4 +40,4 @@ console.log('Day 12 B result is', runDay12B());
 console.log('Day 13 A result is', runDay13A());
 console.log('Day 13 B result is', runDay13B());
 console.log('Day 14 A result is', runDay14A());
-// console.log('Day 14 B result is', runDay14B());
+console.log('Day 14 B result is', runDay14B());

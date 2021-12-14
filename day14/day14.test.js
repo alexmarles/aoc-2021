@@ -14,16 +14,16 @@ describe('Day 14 A', () => {
     });
 });
 
-// describe('Day 14 B', () => {
-//     it('should solve example', () => {
-//         const result = day14B('day14/exampleData');
+describe('Day 14 B', () => {
+    it('should solve example', () => {
+        const result = day14B('day14/exampleData');
 
-//         expect(result).toBe();
-//     });
+        expect(result).toBe(2188189693529);
+    });
 
-//     // it('should solve input', () => {
-//     //     const result = day14B('day14/inputData');
+    it('should solve input', () => {
+        const result = day14B('day14/inputData');
 
-//     //     expect(result).toBe();
-//     // });
-// });
+        expect(result).toBe(12271437788530);
+    });
+});
