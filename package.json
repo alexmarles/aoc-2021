@@ -6,11 +6,12 @@
   "author": "Àlex Marlés",
   "license": "MIT",
   "dependencies": {
+    "dijkstrajs": "^1.0.2",
     "jest": "^27.4.3"
   },
   "scripts": {
-      "test": "jest",
-      "watch": "jest --watch",
-      "start": "node index.js"
+    "test": "jest",
+    "watch": "jest --watch",
+    "start": "node index.js"
   }
 }
