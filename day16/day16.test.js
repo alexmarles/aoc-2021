@@ -103,16 +103,58 @@ describe('Day 16 A', () => {
     });
 });
 
-// describe('Day 16 B', () => {
-//     it('should solve example', () => {
-//         const result = day16B('day16/exampleData');
+describe('Day 16 B', () => {
+    it('should solve example 5', () => {
+        const result = day16B('day16/exampleData5');
 
-//         expect(result).toBe(316);
-//     });
+        expect(result).toBe(3);
+    });
 
-//     // it('should solve input', () => {
-//     //     const result = day16B('day16/inputData');
+    it('should solve example 6', () => {
+        const result = day16B('day16/exampleData6');
 
-//     //     expect(result).toBe(3040);
-//     // });
-// });
+        expect(result).toBe(54);
+    });
+
+    it('should solve example 7', () => {
+        const result = day16B('day16/exampleData7');
+
+        expect(result).toBe(7);
+    });
+
+    it('should solve example 8', () => {
+        const result = day16B('day16/exampleData8');
+
+        expect(result).toBe(9);
+    });
+
+    it('should solve example 9', () => {
+        const result = day16B('day16/exampleData9');
+
+        expect(result).toBe(1);
+    });
+
+    it('should solve example 10', () => {
+        const result = day16B('day16/exampleData10');
+
+        expect(result).toBe(0);
+    });
+
+    it('should solve example 11', () => {
+        const result = day16B('day16/exampleData11');
+
+        expect(result).toBe(0);
+    });
+
+    it('should solve example 12', () => {
+        const result = day16B('day16/exampleData12');
+
+        expect(result).toBe(1);
+    });
+
+    it('should solve input', () => {
+        const result = day16B('day16/inputData');
+
+        expect(result).toBe(834151779165);
+    });
+});

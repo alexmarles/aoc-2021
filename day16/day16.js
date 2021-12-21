@@ -1,5 +1,5 @@
 /* Day 16 */
-const { getInputData, sum } = require('../utils');
+const { getInputData, sum, min, max } = require('../utils');
 
 function hex2bin (hex) {
     return hex.toString().split('').map(h => (parseInt(h, 16).toString(2)).padStart(4, '0')).join('');
@@ -10,7 +10,14 @@ function bin2int (bin) {
 }
 
 const TYPES = {
+    sum: 0,
+    product: 1,
+    minimum: 2,
+    maximum: 3,
     literal: 4,
+    gt: 5,
+    lt: 6,
+    equal: 7,
 };
 
 function parseVersion (packet) {
@@ -116,6 +123,43 @@ function sumVers (packet) {
     return parseInt(packet.version, 10) + sum(packet.subpackets.map(sub => sumVers(sub)));
 }
 
+function operate (packet) {
+    const type = packet.type;
+    let result;
+    switch (type) {
+        case TYPES.sum:
+            if (packet.subpackets.length === 1) result = operate(packet.subpackets[0]);
+            else result = sum(packet.subpackets.map(sub => operate(sub)));
+            break;
+        case TYPES.product:
+            if (packet.subpackets.length === 1) result = operate(packet.subpackets[0]);
+            else result = packet.subpackets.map(sub => operate(sub)).reduce((total, current) => total*current, 1);
+            break;
+        case TYPES.minimum:
+            result = min(packet.subpackets.map(sub => operate(sub)));
+            break;
+        case TYPES.maximum:
+            result = max(packet.subpackets.map(sub => operate(sub)));
+            break;
+        case TYPES.literal:
+            result = packet.number;
+            break;
+        case TYPES.gt:
+            const gt = packet.subpackets.map(sub => operate(sub));
+            result = gt[0] > gt[1] ? 1 : 0;
+            break;
+        case TYPES.lt:
+            const lt = packet.subpackets.map(sub => operate(sub));
+            result = lt[0] < lt[1] ? 1 : 0;
+            break;
+        case TYPES.equal:
+            const equal = packet.subpackets.map(sub => operate(sub));
+            result = equal[0] === equal[1] ? 1 : 0;
+            break;
+    };
+    return result;
+}
+
 function parsePacket (packet) {
     const type = parseType(packet);
     let parsedPacket;
@@ -127,9 +171,11 @@ function parsePacket (packet) {
     return parsedPacket;
 }
 
-function run (data) {
+function run (data, operations = false) {
     const { packet } = parsePacket(hex2bin(data));
-    return sumVers(packet);
+    if (!operations)
+        return sumVers(packet);
+    return operate(packet);
 }
 
 function day16A (file) {
@@ -139,7 +185,7 @@ function day16A (file) {
 
 function day16B (file) {
     const data = getInputData(file);
-    return run(data);
+    return run(data, true);
 }
 
 module.exports = {
