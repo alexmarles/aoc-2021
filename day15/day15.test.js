@@ -24,6 +24,6 @@ describe('Day 15 B', () => {
     it('should solve input', () => {
         const result = day15B('day15/inputData');
 
-        expect(result).toBe(3038);
+        expect(result).toBe(3040);
     });
 });
