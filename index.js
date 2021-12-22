@@ -50,6 +50,6 @@ console.log('Day 15 B result is', runDay15B());
 console.log('Day 16 A result is', runDay16A());
 console.log('Day 16 B result is', runDay16B());
 console.log('Day 17 A result is', runDay17A());
-// console.log('Day 17 B result is', runDay17B());
+console.log('Day 17 B result is', runDay17B());
 // console.log('Day 18 A result is', runDay18A());
 // console.log('Day 18 B result is', runDay18B());
