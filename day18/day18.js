@@ -1,9 +1,14 @@
 /* Day 18 */
-const { getInputData, sum } = require('../utils');
+const { getInputData, sum, min } = require('../utils');
 const { v4: uuidV4 } = require('uuid');
 
+let lastId = 0;
+function getNewId () {
+    return (lastId++).toString();
+}
+
 function createGraph ({ graph, element, parent = null, level = 0, isLeft = false, isRight = false }) {
-    const id = uuidV4();
+    const id = getNewId();
     const node = {
         id,
         level,
@@ -35,9 +40,9 @@ function sumGraphs (first, second) {
     Object.keys(second).forEach(key => second[key].level++);
     const firstRootId = Object.keys(first).filter(key => !first[key].parent)[0];
     const secondRootId = Object.keys(second).filter(key => !second[key].parent)[0];
-    const newId = uuidV4();
+    const newId = getNewId();
     const newRoot = {
-        newId,
+        id: newId,
         level: 0,
         parent: null,
         isLeft: false,
@@ -55,7 +60,10 @@ function sumGraphs (first, second) {
         ...second,
         [newId]: newRoot,
     };
-    return graph;
+    return {
+        rootId: newId,
+        graph,
+    };
 }
 
 function findClosestRight (graph, id) {
@@ -84,7 +92,6 @@ function findClosestLeft (graph, id) {
     let current = node;
     while (current.isLeft && current.parent) {
         current = graph[current.parent];
-        // console.log('CURRENT', current);
     }
     if (!current.parent) return false; // No more numbers to the left
     // We found a left leg
@@ -101,16 +108,13 @@ function findClosestLeft (graph, id) {
 
 function explode (graph, ids) {
     if (!ids.length) return graph;
-    const id = ids[0];
-    // console.log('EXPLODING', id);
+    const id = min(ids.map(Number)).toString();
     const closeR = findClosestRight(graph, id);
     if (closeR) {
-        // console.log('closeR', graph[closeR]);
         graph[closeR].value += graph[graph[id].right].value;
     }
     const closeL = findClosestLeft(graph, id);
     if (closeL) {
-        // console.log('closeL', graph[closeL]);
         graph[closeL].value += graph[graph[id].left].value;
     }
     delete graph[graph[id].right];
@@ -118,13 +122,14 @@ function explode (graph, ids) {
     graph[id].left = null;
     graph[id].right = null;
     graph[id].value = 0;
+    // console.log('AFTER EXPLODE', simplifyGraph(graph));
 }
 
 function split (graph, ids) {
     if (!ids.length) return graph;
-    const id = ids[0];
+    const id = min(ids.map(Number)).toString();
     const left = {
-        id: uuidV4(),
+        id: getNewId(),
         level: graph[id].level + 1,
         parent: id,
         isLeft: true,
@@ -134,7 +139,7 @@ function split (graph, ids) {
         value: Math.floor(graph[id].value / 2),
     };
     const right = {
-        id: uuidV4(),
+        id: getNewId(),
         level: graph[id].level + 1,
         parent: id,
         isLeft: false,
@@ -144,21 +149,26 @@ function split (graph, ids) {
         value: Math.ceil(graph[id].value / 2),
     };
     graph[id].value = null;
-    graph[id].left = left;
-    graph[id].right = right;
+    graph[id].left = left.id;
+    graph[id].right = right.id;
     graph[left.id] = left;
     graph[right.id] = right;
+    // console.log('AFTER SPLIT', simplifyGraph(graph));
 }
 
 function reduceGraph (graph) {
-    let toExplode = [];
-    let toSplit = [];
-    do {
-        toExplode = [...new Set(Object.keys(graph).filter(key => graph[key].level > 3).map(key => graph[key].parent))];
-        if (toExplode.length) explode(graph, toExplode);
+    let toExplode = [...new Set(Object.keys(graph).filter(key => graph[key].level > 4 && graph[key].value !== null).map(key => graph[key].parent))];
+    let toSplit = [...new Set(Object.keys(graph).filter(key => graph[key].value > 9))];
+    while (toExplode.length || toSplit.length) {
+        while (toExplode.length) {
+            explode(graph, toExplode);
+            toExplode = [...new Set(Object.keys(graph).filter(key => graph[key].level > 4 && graph[key].value !== null).map(key => graph[key].parent))];
+        }
         toSplit = [...new Set(Object.keys(graph).filter(key => graph[key].value > 9))];
-        if (toSplit.length) split(graph, toSplit);
-    } while (toExplode.length || toSplit.length);
+        split(graph, toSplit);
+        toExplode = [...new Set(Object.keys(graph).filter(key => graph[key].level > 4 && graph[key].value !== null).map(key => graph[key].parent))];
+        toSplit = [...new Set(Object.keys(graph).filter(key => graph[key].value > 9))];
+    }
 }
 
 function getGraphMagnitude (graph, id) {
@@ -169,47 +179,39 @@ function getGraphMagnitude (graph, id) {
     return (3 * getGraphMagnitude(graph, node.left)) + (2 * getGraphMagnitude(graph, node.right));
 }
 
+function simplifyGraph (graph) {
+    return Object.keys(graph).filter(k => typeof graph[k].value === 'number').map(k => ({ value: graph[k].value, level: graph[k].level }));
+}
+
+function printGraph (graph) {
+    console.log(simplifyGraph(graph));
+}
+
 function run (data) {
     const elements = data.map(line => JSON.parse(line));
     const initial = elements.shift();
     let graph = {};
-    let { id: graphRootId } = createGraph({ graph, element: [1,1] });
-    // graph = elements.reduce((oGraph, current) => {
-    //     let newGraph = {};
-    //     createGraph({ graph: newGraph, element: current });
-    //     reduceGraph(oGraph);
-    //     oGraph = sumGraphs(oGraph, newGraph);
-    //     return oGraph;
-    // }, graph);
-    // const magnitude = getGraphMagnitude(graph, graphRootId);
-    let graph2 = {};
-    createGraph({ graph: graph2, element: [2,2] });
-    reduceGraph(graph);
-    graph = sumGraphs(graph, graph2);
-    let graph3 = {};
-    createGraph({ graph: graph3, element: [3,3] });
-    reduceGraph(graph);
-    graph = sumGraphs(graph, graph3);
-    let graph4 = {};
-    createGraph({ graph: graph4, element: [4,4] });
-    reduceGraph(graph);
-    graph = sumGraphs(graph, graph4);
-    let graph5 = {};
-    createGraph({ graph: graph5, element: [5,5] });
-    reduceGraph(graph);
-    graph = sumGraphs(graph, graph5);
-    // let graph6 = {};
-    // createGraph({ graph: graph6, element: [6,6] });
-    // reduceGraph(graph);
-    // graph = sumGraphs(graph, graph6);
-    reduceGraph(graph);
-    console.log(Object.keys(graph).filter(k => typeof graph[k].value === 'number').map(k => ({ value: graph[k].value, level: graph[k].level })));
-    // console.log(Object.keys(graph).filter(k => !graph[k].parent));
+    let { id: graphRootId } = createGraph({ graph, element: initial });
+    // printGraph(graph);
+    elements.forEach((element, i) => {
+        let newGraph = {};
+        createGraph({ graph: newGraph, element });
+        // printGraph(newGraph);
+
+        reduceGraph(graph);
+        reduceGraph(newGraph);
+        const result = sumGraphs(graph, newGraph);
+        graphRootId = result.rootId;
+        graph = result.graph;
+    });
+    const magnitude = getGraphMagnitude(graph, graphRootId);
+    // console.log(magnitude);
+    return magnitude;
 }
 
 function day18A (file) {
     const data = getInputData(file);
-    run(data);
+    return run(data);
     return 4140;
 }
 
@@ -221,4 +223,9 @@ function day18B (file) {
 module.exports = {
     day18A,
     day18B,
+    createGraph,
+    reduceGraph,
+    sumGraphs,
+    getGraphMagnitude,
+    simplifyGraph,
 };
